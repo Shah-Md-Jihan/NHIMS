@@ -33,7 +33,7 @@ const FacebookIcon = () => (
 );
 
 const socialButtonClass =
-  "flex h-11 w-full items-center justify-center gap-2.5 rounded-lg border border-zinc-200 bg-white px-4 text-[13px] font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/15";
+  "flex h-11 w-full items-center justify-center gap-2.5 rounded-lg border border-zinc-200 bg-white px-4 text-[13px] font-medium text-zinc-700 transition-colors hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/15";
 
 export const SocialAuthButtons = () => (
   <div className="grid gap-3 sm:grid-cols-2">

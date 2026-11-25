@@ -160,14 +160,14 @@ const Hero = ({
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
             <Link
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-teal-600 px-6 text-sm font-semibold text-white shadow-lg shadow-zinc-950/30 transition-colors hover:bg-teal-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-300/40"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-teal-600 px-6 text-sm font-medium text-white shadow-lg shadow-zinc-950/30 transition-colors hover:bg-teal-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-300/40"
               href="/doctors"
             >
               Find a Doctor
               <ArrowRightIcon className="size-4" />
             </Link>
             <Link
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/25"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-6 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/25"
               href="/hospitals"
             >
               Explore Hospitals

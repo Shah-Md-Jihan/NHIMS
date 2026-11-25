@@ -45,7 +45,7 @@ const SignInPage = () => {
         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-teal-700 sm:text-xs">
           Secure Access Portal
         </p>
-        <h1 className="mt-3 text-[30px] font-medium leading-tight tracking-tight text-zinc-900 sm:text-4xl">
+        <h1 className="mt-3 text-[30px] font-bold leading-tight tracking-tight text-zinc-900 sm:text-4xl">
           Welcome back
         </h1>
         <p className="mt-2 text-sm text-zinc-500 sm:text-[15px]">
@@ -121,7 +121,7 @@ const SignInPage = () => {
           </div>
 
           <button
-            className="group flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-teal-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/25"
+            className="group flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-teal-700 px-5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/25"
             type="submit"
           >
             Sign In

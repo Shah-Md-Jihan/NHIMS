@@ -1,2 +1,58 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+/*
+ * Project typography — Inter is loaded once in the root layout and applied
+ * here so every page inherits the same family and weight hierarchy.
+ *
+ * Main heading      → 700 (h1)
+ * Section heading   → 600 (h2–h6)
+ * Body text         → 400 (body)
+ * Buttons           → 500 (button elements)
+ * Tables & forms    → 400 (inputs/tables), 500 (labels)
+ * Dashboard numbers → 700 (use `font-bold` for numeric KPIs)
+ */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    font-weight: 400;
+  }
+
+  h1 {
+    font-weight: 700;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+  }
+
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"] {
+    font-weight: 500;
+  }
+
+  label {
+    font-weight: 500;
+  }
+
+  input,
+  select,
+  textarea,
+  table {
+    font-weight: 400;
+  }
+}

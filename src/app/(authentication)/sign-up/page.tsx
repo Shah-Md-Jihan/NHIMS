@@ -2,12 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  useEffect,
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-} from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 
 import { AuthField } from "../_components/auth-field";
 import {
@@ -28,6 +23,8 @@ import {
   validateSignUp,
   type SignUpValues,
 } from "../_lib/validation";
+import { signUp } from "@/lib/auth-client";
+import { toast } from "react-toastify";
 
 type TouchedFields = Partial<Record<keyof SignUpValues | "photo", boolean>>;
 
@@ -47,6 +44,7 @@ const SignUpPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [photo, setPhoto] = useState<PhotoSelection | null>(null);
   const [photoError, setPhotoError] = useState<string | undefined>();
+  const [imgURL, setImgURL] = useState<string | null>(null);
 
   useEffect(() => {
     if (!photo) return;
@@ -60,16 +58,15 @@ const SignUpPage = () => {
   const errorFor = (field: keyof SignUpValues) =>
     submitted || touched[field] ? errors[field] : undefined;
 
-  const updateField =
-    (field: keyof SignUpValues) => (value: string) => {
-      setValidated(false);
-      setValues((prev) => ({ ...prev, [field]: value }));
-    };
+  const updateField = (field: keyof SignUpValues) => (value: string) => {
+    setValidated(false);
+    setValues((prev) => ({ ...prev, [field]: value }));
+  };
 
   const touch = (field: keyof TouchedFields) => () =>
     setTouched((prev) => ({ ...prev, [field]: true }));
 
-  const handlePhotoChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     // Allow picking the same file again after removing it.
@@ -88,6 +85,20 @@ const SignUpPage = () => {
     setValidated(false);
     setTouched((prev) => ({ ...prev, photo: true }));
     setPhoto({ file, url: URL.createObjectURL(file) });
+    const formFile = new FormData();
+    formFile.append("image", file);
+
+    const res = await fetch(
+      `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+      {
+        method: "POST",
+        body: formFile,
+      },
+    );
+
+    const image = await res.json();
+
+    setImgURL(image.data.url);
   };
 
   const removePhoto = () => {
@@ -96,7 +107,7 @@ const SignUpPage = () => {
     setValidated(false);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitted(true);
     setTouched({
@@ -118,6 +129,20 @@ const SignUpPage = () => {
     if (!isValid) {
       document.getElementById(firstInvalid ?? "photo")?.focus();
     }
+
+    const { data: user, error } = await signUp.email({
+      name: values.fullName,
+      email: values.email,
+      password: values.password,
+      image: imgURL as string,
+      callbackURL: "/sign-in",
+    });
+
+    if (user?.token) {
+      toast.success("Account Create Successfully");
+    } else {
+      toast.error(error?.message || "Something went wrong!");
+    }
   };
 
   const initials = values.fullName
@@ -128,10 +153,7 @@ const SignUpPage = () => {
     .map((part) => part.charAt(0).toUpperCase())
     .join("");
 
-  const photoDescriptionIds = [
-    "photo-hint",
-    photoError ? "photo-error" : null,
-  ]
+  const photoDescriptionIds = ["photo-hint", photoError ? "photo-error" : null]
     .filter(Boolean)
     .join(" ");
 
@@ -141,7 +163,7 @@ const SignUpPage = () => {
         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-teal-700 sm:text-xs">
           Secure Access Portal
         </p>
-        <h1 className="mt-3 text-[30px] font-medium leading-tight tracking-tight text-zinc-900 sm:text-4xl">
+        <h1 className="mt-3 text-[30px] font-bold leading-tight tracking-tight text-zinc-900 sm:text-4xl">
           Create your account
         </h1>
         <p className="mt-2 text-sm text-zinc-500 sm:text-[15px]">
@@ -150,7 +172,7 @@ const SignUpPage = () => {
 
         <form className="mt-8 space-y-5" noValidate onSubmit={handleSubmit}>
           <div className="space-y-2">
-            <span className="block text-[13px] font-semibold text-zinc-800">
+            <span className="block text-[13px] font-medium text-zinc-800">
               Profile photo
             </span>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -184,14 +206,14 @@ const SignUpPage = () => {
                     type="file"
                   />
                   <label
-                    className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-[13px] font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 peer-focus-visible:ring-4 peer-focus-visible:ring-teal-600/15"
+                    className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-[13px] font-medium text-zinc-700 transition-colors hover:bg-zinc-50 peer-focus-visible:ring-4 peer-focus-visible:ring-teal-600/15"
                     htmlFor="photo"
                   >
                     {photo ? "Change photo" : "Choose photo"}
                   </label>
                   {photo ? (
                     <button
-                      className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-[13px] font-semibold text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/30"
+                      className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-[13px] font-medium text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/30"
                       onClick={removePhoto}
                       type="button"
                     >
@@ -275,9 +297,7 @@ const SignUpPage = () => {
             required
             trailing={
               <PasswordToggle
-                onToggle={() =>
-                  setShowConfirmPassword((visible) => !visible)
-                }
+                onToggle={() => setShowConfirmPassword((visible) => !visible)}
                 visible={showConfirmPassword}
               />
             }
@@ -296,7 +316,7 @@ const SignUpPage = () => {
           ) : null}
 
           <button
-            className="group flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-teal-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/25"
+            className="group flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-teal-700 px-5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/25"
             type="submit"
           >
             Create Account

@@ -46,7 +46,7 @@ export const AuthField = ({
 
   return (
     <div className="space-y-2">
-      <label className="block text-[13px] font-semibold text-zinc-800" htmlFor={id}>
+      <label className="block text-[13px] font-medium text-zinc-800" htmlFor={id}>
         {label}
       </label>
       <div className="relative">

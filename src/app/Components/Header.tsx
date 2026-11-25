@@ -157,7 +157,7 @@ const Header = () => {
           </Link>
 
           <Link
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#0d8a76] px-3 text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#0a7362] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 sm:px-5 sm:text-sm"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#0d8a76] px-3 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-[#0a7362] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 sm:px-5 sm:text-sm"
             href="/appointments/book"
           >
             <CalendarIcon className="size-[18px] shrink-0" />
