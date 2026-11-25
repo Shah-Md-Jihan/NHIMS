@@ -11,6 +11,7 @@ import {
   SocialAuthButtons,
 } from "../_components/social-auth-buttons";
 import { validateSignIn, type SignInValues } from "../_lib/validation";
+import { signIn } from "@/lib/auth-client";
 
 const SignInPage = () => {
   const [values, setValues] = useState<SignInValues>({
@@ -22,15 +23,25 @@ const SignInPage = () => {
   >({});
   const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const errors = validateSignIn(values);
   const errorFor = (field: keyof SignInValues) =>
     submitted || touched[field] ? errors[field] : undefined;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitted(true);
     setTouched({ email: true, password: true });
+
+    const { data, error } = await signIn.email({
+      email: values.email,
+      password: values.password,
+      rememberMe: rememberMe,
+      callbackURL: "/",
+    });
+
+    console.log("Sign In response:", data, error);
 
     const firstInvalid = (["email", "password"] as const).find(
       (field) => errors[field],
@@ -74,7 +85,9 @@ const SignInPage = () => {
             id="password"
             label="Password"
             onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
-            onChange={(password) => setValues((prev) => ({ ...prev, password }))}
+            onChange={(password) =>
+              setValues((prev) => ({ ...prev, password }))
+            }
             placeholder="••••••••"
             required
             trailing={
@@ -95,6 +108,7 @@ const SignInPage = () => {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
+                onChange={() => setRememberMe(!rememberMe)}
               />
               <span className="flex size-[18px] items-center justify-center rounded-[4px] border border-zinc-300 bg-white transition-colors peer-checked:border-teal-700 peer-checked:bg-teal-700 peer-checked:[&>svg]:opacity-100 peer-focus-visible:ring-4 peer-focus-visible:ring-teal-600/15">
                 <svg
