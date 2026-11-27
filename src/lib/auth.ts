@@ -14,7 +14,24 @@ export const auth = betterAuth({
       role: {
         type: ["admin", "patient", "doctor"],
         input: false,
-        default: "patient",
+        defaultValue: "patient",
+      },
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const role = user.role;
+          if (role !== "admin" && role !== "patient" && role !== "doctor") {
+            return {
+              data: {
+                ...user,
+                role: "patient",
+              },
+            };
+          }
+        },
       },
     },
   },

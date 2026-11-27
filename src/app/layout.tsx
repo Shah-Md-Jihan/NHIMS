@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
+import HideOnDashboard from "./Components/HideOnDashboard";
 import { ToastContainer } from "react-toastify";
 
 const inter = Inter({
@@ -23,7 +24,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         {children}
         <ToastContainer />
-        <Footer />
+        <HideOnDashboard>
+          <Footer />
+        </HideOnDashboard>
       </body>
     </html>
   );

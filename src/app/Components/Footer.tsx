@@ -1,4 +1,12 @@
 import Link from "next/link";
+import { cacheLife } from "next/cache";
+
+async function getFooterYear() {
+  "use cache";
+  cacheLife("days");
+
+  return new Date().getFullYear();
+}
 
 const exploreLinks = [
   { label: "Find doctors", href: "/doctors" },
@@ -48,8 +56,8 @@ const ShieldIcon = () => (
   </svg>
 );
 
-const Footer = () => {
-  const year = new Date().getFullYear();
+const Footer = async () => {
+  const year = await getFooterYear();
 
   return (
     <footer className="bg-[#0a2f27] text-[#9db8b1]">

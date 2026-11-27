@@ -1,8 +1,10 @@
 "use client";
 
+import { useSession } from "@/lib/auth-client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import ProfileAvater from "./ProfileAvater";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -86,6 +88,8 @@ const MenuIcon = ({ open }: { open: boolean }) => (
 const Header = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
+  const user = session?.user;
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -98,6 +102,9 @@ const Header = () => {
 
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [menuOpen]);
+
+  // The dashboard renders its own shell (sidebar + mobile top bar).
+  if (pathname.startsWith("/dashboard")) return null;
 
   const isActive = (href: string) =>
     href === "/"
@@ -147,14 +154,18 @@ const Header = () => {
         </nav>
 
         <div className="ml-auto flex items-center gap-1 sm:gap-3 xl:ml-0">
-          <Link
-            aria-label="Login or register"
-            className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-[13px] font-medium text-zinc-600 transition-colors hover:text-[#0d8a76] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 sm:px-1.5"
-            href="/sign-in"
-          >
-            <UserIcon className="size-[18px] shrink-0" />
-            <span className="hidden sm:inline">Login / Register</span>
-          </Link>
+          {user ? (
+            <ProfileAvater user={user} />
+          ) : (
+            <Link
+              aria-label="Login or register"
+              className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-[13px] font-medium text-zinc-600 transition-colors hover:text-[#0d8a76] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 sm:px-1.5"
+              href="/sign-in"
+            >
+              <UserIcon className="size-[18px] shrink-0" />
+              <span className="hidden sm:inline">Login / Register</span>
+            </Link>
+          )}
 
           <Link
             className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#0d8a76] px-3 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-[#0a7362] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 sm:px-5 sm:text-sm"
@@ -205,16 +216,18 @@ const Header = () => {
                 </li>
               );
             })}
-            <li className="mt-2 border-t border-zinc-200/80 pt-3 sm:hidden">
-              <Link
-                className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
-                href="/sign-in"
-                onClick={() => setMenuOpen(false)}
-              >
-                <UserIcon className="size-[18px] shrink-0" />
-                Login / Register
-              </Link>
-            </li>
+            {!user ? (
+              <li className="mt-2 border-t border-zinc-200/80 pt-3 sm:hidden">
+                <Link
+                  className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+                  href="/sign-in"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <UserIcon className="size-[18px] shrink-0" />
+                  Login / Register
+                </Link>
+              </li>
+            ) : null}
           </ul>
         </nav>
       ) : null}
